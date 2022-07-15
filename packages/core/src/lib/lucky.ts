@@ -280,6 +280,41 @@ export default class Lucky {
   }
 
   /**
+   * 根据公共绘制图片的方法 创建绘制圆形头像
+   * @param imgObj 图片对象
+   * @param r 圆形半径
+   * @param rectInfo: [x轴位置, y轴位置, 渲染宽度, 渲染高度]
+   */
+  protected drawRoundAvatar(
+    ctx: CanvasRenderingContext2D,
+    imgObj: ImgType,
+    r: number,
+    ...rectInfo: [...Tuple<number, 4>, ...Partial<Tuple<number, 4>>]
+  ): void {
+    const { dpr } = this.config
+    if (rectInfo.length === 8) {
+      rectInfo = rectInfo.map((val, index) => (index < 4 ? val! * dpr : val)) as Tuple<number, 8>
+    }
+    try {
+      const [xPointer, yPointer, width, height] = rectInfo
+
+      ctx.beginPath()
+
+      ctx.arc(xPointer + width / 2, yPointer + width / 2, r, 0, 2 * Math.PI)
+
+      ctx.save()
+
+      ctx.clip()
+
+      ctx.drawImage(imgObj, ...(rectInfo as Tuple<number, 8>))
+
+      ctx.restore()
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  /**
    * 计算图片的渲染宽高
    * @param imgObj 图片标签元素
    * @param imgInfo 图片信息

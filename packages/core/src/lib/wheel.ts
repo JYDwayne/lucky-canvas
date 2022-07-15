@@ -380,7 +380,8 @@ export default class LuckyWheel extends Lucky {
             this.getOffsetX(trueWidth) + this.getLength(imgInfo.left, shortSide),
             this.getLength(imgInfo.top, prizeHeight)
           ]
-          this.drawImage(ctx, prizeImg, xAxis, yAxis, trueWidth, trueHeight)
+
+          this.drawRoundAvatar(ctx, prizeImg, trueWidth / 2, xAxis, yAxis, trueWidth, trueHeight)
         })
       // 逐行绘制文字
       prize.fonts &&
