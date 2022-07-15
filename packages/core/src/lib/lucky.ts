@@ -1,4 +1,4 @@
-import '../utils/polyfill'
+import '../utils/polyfill'
 import { has, isExpectType, throttle } from '../utils/index'
 import { name, version } from '../../package.json'
 import { ConfigType, UserConfigType, ImgItemType, ImgType, Tuple } from '../types/index'
@@ -15,7 +15,7 @@ export default class Lucky {
   protected boxWidth: number = 0
   protected boxHeight: number = 0
   protected data: {
-    width: string | number,
+    width: string | number
     height: string | number
   }
 
@@ -23,10 +23,10 @@ export default class Lucky {
    * 公共构造器
    * @param config
    */
-  constructor (
+  constructor(
     config: string | HTMLDivElement | UserConfigType,
     data: {
-      width: string | number,
+      width: string | number
       height: string | number
     }
   ) {
@@ -62,7 +62,10 @@ export default class Lucky {
     }
     // 监听 window 触发 resize 时重置
     if (window && typeof window.addEventListener === 'function') {
-      window.addEventListener('resize', throttle(() => this.resize(), 300))
+      window.addEventListener(
+        'resize',
+        throttle(() => this.resize(), 300)
+      )
     }
     // 监听异步设置 html 的 fontSize 并重新绘制
     if (window && typeof window.MutationObserver === 'function') {
@@ -90,7 +93,7 @@ export default class Lucky {
   /**
    * 初始化方法
    */
-  protected initLucky () {
+  protected initLucky() {
     this.resize()
     if (!this.boxWidth || !this.boxHeight) {
       return console.error('无法获取到宽度或高度')
@@ -101,18 +104,18 @@ export default class Lucky {
    * 鼠标点击事件
    * @param e 事件参数
    */
-  protected handleClick (e: MouseEvent): void {}
+  protected handleClick(e: MouseEvent): void {}
 
   /**
    * 根标签的字体大小
    */
-  protected setHTMLFontSize (): void {
+  protected setHTMLFontSize(): void {
     if (!window) return
     this.htmlFontSize = +window.getComputedStyle(document.documentElement).fontSize.slice(0, -2)
   }
 
   // 清空画布
-  public clearCanvas (): void {
+  public clearCanvas(): void {
     const [width, height] = [this.boxWidth, this.boxHeight]
     this.ctx.clearRect(-width, -height, width * 2, height * 2)
   }
@@ -121,7 +124,7 @@ export default class Lucky {
    * 设备像素比
    * window 环境下自动获取, 其余环境手动传入
    */
-  protected setDpr (): void {
+  protected setDpr(): void {
     const { config } = this
     if (config.dpr) {
       // 优先使用 config 传入的 dpr
@@ -135,10 +138,11 @@ export default class Lucky {
   /**
    * 重置盒子和canvas的宽高
    */
-  private resetWidthAndHeight (): void {
+  private resetWidthAndHeight(): void {
     const { config, data } = this
     // 如果是浏览器环境并且存在盒子
-    let boxWidth = 0, boxHeight = 0
+    let boxWidth = 0,
+      boxHeight = 0
     if (config.divElement) {
       boxWidth = config.divElement.offsetWidth
       boxHeight = config.divElement.offsetHeight
@@ -157,7 +161,7 @@ export default class Lucky {
   /**
    * 根据 dpr 缩放 canvas 并处理位移
    */
-  protected zoomCanvas (): void {
+  protected zoomCanvas(): void {
     const { config, ctx } = this
     const { canvasElement, dpr } = config
     const [width, height] = [this.boxWidth * dpr, this.boxHeight * dpr]
@@ -174,10 +178,11 @@ export default class Lucky {
   /**
    * 从 window 对象上获取一些方法
    */
-  private initWindowFunction (): void {
+  private initWindowFunction(): void {
     const { config } = this
     if (window) {
-      this.rAF = window.requestAnimationFrame ||
+      this.rAF =
+        window.requestAnimationFrame ||
         window['webkitRequestAnimationFrame'] ||
         window['mozRequestAnimationFrame'] ||
         function (callback: Function) {
@@ -202,7 +207,7 @@ export default class Lucky {
     }
   }
 
-  public isWeb () {
+  public isWeb() {
     return ['WEB', 'UNI-H5', 'TARO-H5'].includes(this.config.flag)
   }
 
@@ -211,11 +216,7 @@ export default class Lucky {
    * @param src 图片路径
    * @param info 图片信息
    */
-  protected loadImg (
-    src: string,
-    info: ImgItemType,
-    resolveName = '$resolve'
-  ): Promise<ImgType> {
+  protected loadImg(src: string, info: ImgItemType, resolveName = '$resolve'): Promise<ImgType> {
     return new Promise((resolve, reject) => {
       if (!src) reject(`=> '${info.src}' 不能为空或不合法`)
       if (this.config.flag === 'WEB') {
@@ -235,7 +236,7 @@ export default class Lucky {
   /**
    * 公共绘制图片的方法
    * @param imgObj 图片对象
-   * @param rectInfo: [x轴位置, y轴位置, 渲染宽度, 渲染高度] 
+   * @param rectInfo: [x轴位置, y轴位置, 渲染宽度, 渲染高度]
    */
   protected drawImage(
     ctx: CanvasRenderingContext2D,
@@ -262,11 +263,11 @@ export default class Lucky {
       ctx.putImageData(temp, ...(rectInfo.slice(4, 6) as Tuple<number, 2>))
     } else {
       if (rectInfo.length === 8) {
-        rectInfo = rectInfo.map((val, index) => index < 4 ? val! * dpr : val) as Tuple<number, 8>
+        rectInfo = rectInfo.map((val, index) => (index < 4 ? val! * dpr : val)) as Tuple<number, 8>
       }
       // 尝试捕获错误
       try {
-        ctx.drawImage(drawImg, ...rectInfo as Tuple<number, 8>)
+        ctx.drawImage(drawImg, ...(rectInfo as Tuple<number, 8>))
       } catch (err) {
         /**
          * TODO: safari浏览器下, init() 会出现奇怪的报错
@@ -286,7 +287,7 @@ export default class Lucky {
    * @param maxHeight 最大高度
    * @return [渲染宽度, 渲染高度]
    */
-  protected computedWidthAndHeight (
+  protected computedWidthAndHeight(
     imgObj: ImgType,
     imgInfo: ImgItemType,
     maxWidth: number,
@@ -308,10 +309,7 @@ export default class Lucky {
       return [imgObj.width * (trueHeight / imgObj.height), trueHeight]
     }
     // 如果宽度和高度都填写了, 就如实计算
-    return [
-      this.getLength(imgInfo.width, maxWidth),
-      this.getLength(imgInfo.height, maxHeight)
-    ]
+    return [this.getLength(imgInfo.width, maxWidth), this.getLength(imgInfo.height, maxHeight)]
   }
 
   /**
@@ -320,20 +318,22 @@ export default class Lucky {
    * @param { number } denominator 分子
    * @return { number } 返回新的字符串
    */
-  protected changeUnits (value: string, denominator = 1): number {
+  protected changeUnits(value: string, denominator = 1): number {
     const { config } = this
-    return Number(value.replace(/^([-]*[0-9.]*)([a-z%]*)$/, (val, num, unit) => {
-      const handleCssUnit = {
-        '%': (n: number) => n * (denominator / 100),
-        'px': (n: number) => n * 1,
-        'rem': (n: number) => n * this.htmlFontSize,
-        'vw': (n: number) => n / 100 * window.innerWidth,
-      }[unit]
-      if (handleCssUnit) return handleCssUnit(num)
-      // 如果找不到默认单位, 就交给外面处理
-      const otherHandleCssUnit = config.handleCssUnit || config['unitFunc']
-      return otherHandleCssUnit ? otherHandleCssUnit(num, unit) : num
-    }))
+    return Number(
+      value.replace(/^([-]*[0-9.]*)([a-z%]*)$/, (val, num, unit) => {
+        const handleCssUnit = {
+          '%': (n: number) => n * (denominator / 100),
+          px: (n: number) => n * 1,
+          rem: (n: number) => n * this.htmlFontSize,
+          vw: (n: number) => (n / 100) * window.innerWidth
+        }[unit]
+        if (handleCssUnit) return handleCssUnit(num)
+        // 如果找不到默认单位, 就交给外面处理
+        const otherHandleCssUnit = config.handleCssUnit || config['unitFunc']
+        return otherHandleCssUnit ? otherHandleCssUnit(num, unit) : num
+      })
+    )
   }
 
   /**
@@ -342,7 +342,7 @@ export default class Lucky {
    * @param maxLength 最大长度
    * @return 返回长度
    */
-  protected getLength (length: string | number | undefined, maxLength?: number): number {
+  protected getLength(length: string | number | undefined, maxLength?: number): number {
     if (isExpectType(length, 'number')) return length as number
     if (isExpectType(length, 'string')) return this.changeUnits(length as string, maxLength)
     return 0
@@ -353,12 +353,15 @@ export default class Lucky {
    * @param width
    * @param col
    */
-  protected getOffsetX (width: number, maxWidth: number = 0): number {
+  protected getOffsetX(width: number, maxWidth: number = 0): number {
     return (maxWidth - width) / 2
   }
 
-  protected getOffscreenCanvas (width: number, height: number): {
-    _offscreenCanvas: HTMLCanvasElement,
+  protected getOffscreenCanvas(
+    width: number,
+    height: number
+  ): {
+    _offscreenCanvas: HTMLCanvasElement
     _ctx: CanvasRenderingContext2D
   } | void {
     if (!has(this, '_offscreenCanvas')) {
@@ -386,7 +389,7 @@ export default class Lucky {
    * @param key 属性
    * @param value 新值
    */
-  public $set (data: object, key: string | number, value: any) {
+  public $set(data: object, key: string | number, value: any) {
     if (!data || typeof data !== 'object') return
     defineReactive(data, key, value)
   }
@@ -397,7 +400,7 @@ export default class Lucky {
    * @param key 属性名
    * @param callback 回调函数
    */
-  protected $computed (data: object, key: string, callback: Function) {
+  protected $computed(data: object, key: string, callback: Function) {
     Object.defineProperty(data, key, {
       get: () => {
         return callback.call(this)
@@ -412,7 +415,7 @@ export default class Lucky {
    * @param watchOpt 配置参数
    * @return 卸载当前观察者的函数 (暂未返回)
    */
-  protected $watch (
+  protected $watch(
     expr: string | Function,
     handler: Function | WatchOptType,
     watchOpt: WatchOptType = {}
@@ -428,6 +431,6 @@ export default class Lucky {
       handler.call(this, watcher.value)
     }
     // 返回一个卸载当前观察者的函数
-    return function unWatchFn () {}
+    return function unWatchFn() {}
   }
 }
