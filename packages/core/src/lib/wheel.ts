@@ -122,8 +122,8 @@ export default class LuckyWheel extends Lucky {
         offsetDegree: 0,
         speed: 20,
         speedFunction: 'quad',
-        accelerationTime: 2500,
-        decelerationTime: 2500,
+        accelerationTime: 500,
+        decelerationTime: 500,
         stopRange: 0,
         ...this.defaultConfig
       }
