@@ -28,6 +28,7 @@ export type ImgItemType = {
   formatter?: (img: ImgType) => ImgType
   $resolve?: Function
   $reject?: Function
+  isShowBorder?: boolean
 }
 
 export type BorderRadiusType = string | number
@@ -63,7 +64,8 @@ export type ConfigType = {
 }
 
 type RequireKey = 'width' | 'height'
-export type UserConfigType = Partial<Omit<ConfigType, RequireKey>> & Required<Pick<ConfigType, RequireKey>>
+export type UserConfigType = Partial<Omit<ConfigType, RequireKey>> &
+  Required<Pick<ConfigType, RequireKey>>
 
 export type UniImageType = {
   path: string
@@ -71,4 +73,6 @@ export type UniImageType = {
   height: number
 }
 
-export type Tuple<T, Len extends number, Res extends T[] = []> = Res['length'] extends Len ? Res : Tuple<T, Len, [...Res, T]>
+export type Tuple<T, Len extends number, Res extends T[] = []> = Res['length'] extends Len
+  ? Res
+  : Tuple<T, Len, [...Res, T]>

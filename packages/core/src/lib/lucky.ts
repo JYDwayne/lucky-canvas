@@ -289,6 +289,7 @@ export default class Lucky {
     ctx: CanvasRenderingContext2D,
     imgObj: ImgType,
     r: number,
+    isShowBorder: boolean,
     ...rectInfo: [...Tuple<number, 4>, ...Partial<Tuple<number, 4>>]
   ): void {
     const { dpr } = this.config
@@ -301,6 +302,14 @@ export default class Lucky {
       ctx.beginPath()
 
       ctx.arc(xPointer + width / 2, yPointer + width / 2, r, 0, 2 * Math.PI)
+
+      if (isShowBorder) {
+        ctx.strokeStyle = '#FFF'
+
+        ctx.lineWidth = 2
+      }
+
+      ctx.stroke()
 
       ctx.save()
 
